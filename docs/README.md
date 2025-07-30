@@ -6,6 +6,7 @@ Welcome to the comprehensive documentation for the N8N Clone project - an ultra-
 
 ### 🏗️ Architecture & Design
 - [**System Architecture**](./01-architecture.md) - Complete system architecture overview
+- [**Full Project Structure**](./18-full-project-structure.md) - Complete project file structure
 - [**Domain-Driven Design**](./02-domain-design.md) - DDD implementation and domain modeling
 - [**Microservices Design**](./03-microservices.md) - Microservices architecture and boundaries
 - [**Database Design**](./04-database-design.md) - Database schemas and data modeling
