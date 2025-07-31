@@ -14,7 +14,15 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@n8n-clone/application-workflow": ["libs/application/workflow/index.ts"],
+      "@n8n-clone/domain-execution": ["libs/domain/execution/index.ts"],
+      "@n8n-clone/domain-user": ["libs/domain/user/index.ts"],
+      "@n8n-clone/domain-workflow": ["libs/domain/workflow/index.ts"],
+      "@n8n-clone/infrastructure": ["libs/infrastructure/index.ts"],
+      "@n8n-clone/shared": ["libs/shared/index.ts"],
+      "@n8n-clone/application/user": ["libs/application/user/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

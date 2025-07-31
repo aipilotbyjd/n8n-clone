@@ -9,4 +9,19 @@ export class AppController {
   getData() {
     return this.appService.getData();
   }
+
+  @Get('health')
+  getHealth() {
+    return {
+      service: 'user-management',
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      modules: [
+        'users',
+        'workspaces', 
+        'permissions',
+        'collaboration'
+      ]
+    };
+  }
 }

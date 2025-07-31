@@ -9,4 +9,22 @@ export class AppController {
   getData() {
     return this.appService.getData();
   }
+
+  @Get('health')
+  getHealth() {
+    return {
+      service: 'node-runtime-engine',
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      modules: [
+        'runtime',
+        'code-execution',
+        'expression-parser',
+        'sandbox'
+      ],
+      sandboxSecurity: 'enabled',
+      runtimeVersion: process.version,
+      memoryUsage: process.memoryUsage()
+    };
+  }
 }

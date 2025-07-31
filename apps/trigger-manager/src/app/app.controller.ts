@@ -9,4 +9,22 @@ export class AppController {
   getData() {
     return this.appService.getData();
   }
+
+  @Get('health')
+  getHealth() {
+    return {
+      service: 'trigger-manager',
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      modules: [
+        'cron-triggers',
+        'webhook-triggers',
+        'polling-triggers',
+        'trigger-manager'
+      ],
+      activeTriggers: 0,
+      scheduledJobs: 0,
+      webhookEndpoints: 0
+    };
+  }
 }

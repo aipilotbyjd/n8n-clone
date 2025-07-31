@@ -9,4 +9,16 @@ export class AppController {
   getData() {
     return this.appService.getData();
   }
+
+  @Get('health')
+  getHealth() {
+    return {
+      service: 'credentials-vault',
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      encryption: 'enabled',
+      storedCredentials: 0,
+      oauthConnections: 0
+    };
+  }
 }
