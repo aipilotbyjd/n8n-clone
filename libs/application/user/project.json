@@ -1,8 +1,15 @@
 {
-  "name": "user",
+  "name": "application-user",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/application/user/src",
   "projectType": "library",
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    }
+  },
   "tags": [],
   "targets": {
     "build": {
@@ -10,9 +17,15 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/application/user",
-        "main": "libs/application/user/src/index.ts",
         "tsConfig": "libs/application/user/tsconfig.lib.json",
+        "packageJson": "libs/application/user/package.json",
+        "main": "libs/application/user/src/index.ts",
         "assets": ["libs/application/user/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
       }
     }
   }

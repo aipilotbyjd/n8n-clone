@@ -1,0 +1,32 @@
+{
+  "name": "integrations-core-nodes",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/integrations/core-nodes/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/integrations/core-nodes",
+        "tsConfig": "libs/integrations/core-nodes/tsconfig.lib.json",
+        "packageJson": "libs/integrations/core-nodes/package.json",
+        "main": "libs/integrations/core-nodes/src/index.ts",
+        "assets": ["libs/integrations/core-nodes/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

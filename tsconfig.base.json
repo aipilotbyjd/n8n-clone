@@ -16,12 +16,55 @@
     "baseUrl": ".",
     "paths": {
       "@n8n-clone/application-workflow": ["libs/application/workflow/index.ts"],
+      "@n8n-clone/application/execution": [
+        "libs/application/execution/src/index.ts"
+      ],
+      "@n8n-clone/application/nodes": ["libs/application/nodes/src/index.ts"],
+      "@n8n-clone/application/user": ["libs/application/user/src/index.ts"],
+      "@n8n-clone/application/user-management": [
+        "libs/application/user/src/index.ts"
+      ],
+      "@n8n-clone/application/workflow": [
+        "libs/application/workflow/src/index.ts"
+      ],
       "@n8n-clone/domain-execution": ["libs/domain/execution/index.ts"],
       "@n8n-clone/domain-user": ["libs/domain/user/index.ts"],
       "@n8n-clone/domain-workflow": ["libs/domain/workflow/index.ts"],
+      "@n8n-clone/domain/core": ["libs/domain/core/src/index.ts"],
+      "@n8n-clone/domain/execution": ["libs/domain/execution/src/index.ts"],
+      "@n8n-clone/domain/nodes": ["libs/domain/nodes/src/index.ts"],
+      "@n8n-clone/domain/user": ["libs/domain/user/src/index.ts"],
+      "@n8n-clone/domain/workflow": ["libs/domain/workflow/src/index.ts"],
       "@n8n-clone/infrastructure": ["libs/infrastructure/index.ts"],
+      "@n8n-clone/infrastructure/auth": [
+        "libs/infrastructure/auth/src/index.ts"
+      ],
+      "@n8n-clone/infrastructure/cache": [
+        "libs/infrastructure/cache/src/index.ts"
+      ],
+      "@n8n-clone/infrastructure/database": [
+        "libs/infrastructure/database/src/index.ts"
+      ],
+      "@n8n-clone/infrastructure/messaging": [
+        "libs/infrastructure/messaging/src/index.ts"
+      ],
+      "@n8n-clone/infrastructure/monitoring": [
+        "libs/infrastructure/monitoring/src/index.ts"
+      ],
+      "@n8n-clone/infrastructure/security": [
+        "libs/infrastructure/security/src/index.ts"
+      ],
+      "@n8n-clone/integrations/core-nodes": [
+        "libs/integrations/core-nodes/src/index.ts"
+      ],
+      "@n8n-clone/integrations/http-nodes": [
+        "libs/integrations/http-nodes/src/index.ts"
+      ],
       "@n8n-clone/shared": ["libs/shared/index.ts"],
-      "@n8n-clone/application/user": ["libs/application/user/src/index.ts"]
+      "@n8n-clone/shared/common": ["libs/shared/common/src/index.ts"],
+      "@n8n-clone/shared/types": ["libs/shared/types/src/index.ts"],
+      "@n8n-clone/shared/utils": ["libs/shared/utils/src/index.ts"],
+      "@n8n-clone/testing/helpers": ["libs/testing/helpers/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

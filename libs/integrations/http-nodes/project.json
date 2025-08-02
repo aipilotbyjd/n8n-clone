@@ -1,0 +1,32 @@
+{
+  "name": "integrations-http-nodes",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/integrations/http-nodes/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/integrations/http-nodes",
+        "tsConfig": "libs/integrations/http-nodes/tsconfig.lib.json",
+        "packageJson": "libs/integrations/http-nodes/package.json",
+        "main": "libs/integrations/http-nodes/src/index.ts",
+        "assets": ["libs/integrations/http-nodes/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "infrastructure-cache",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/infrastructure/cache/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/infrastructure/cache",
+        "tsConfig": "libs/infrastructure/cache/tsconfig.lib.json",
+        "packageJson": "libs/infrastructure/cache/package.json",
+        "main": "libs/infrastructure/cache/src/index.ts",
+        "assets": ["libs/infrastructure/cache/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

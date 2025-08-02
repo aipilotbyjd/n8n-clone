@@ -1,0 +1,32 @@
+{
+  "name": "infrastructure-auth",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/infrastructure/auth/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/infrastructure/auth",
+        "tsConfig": "libs/infrastructure/auth/tsconfig.lib.json",
+        "packageJson": "libs/infrastructure/auth/package.json",
+        "main": "libs/infrastructure/auth/src/index.ts",
+        "assets": ["libs/infrastructure/auth/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

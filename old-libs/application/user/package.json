@@ -1,0 +1,15 @@
+{
+  "name": "\\@n8n-clone/application/user\\",
+  "version": "0.0.1",
+  "private": true,
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/cqrs": "^10.0.0",
+    "class-validator": "^0.14.0",
+    "class-transformer": "^0.5.1",
+    "tslib": "^2.3.0"
+  }
+}

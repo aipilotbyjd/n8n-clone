@@ -1,5 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Logger, UseGuards } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateWorkflowCommand, GetWorkflowsQuery, GetWorkflowByIdQuery } from '@n8n-clone/application/workflow';
+import { ApiSuccessResponse, ApiErrorResponse } from '@n8n-clone/shared/common';
+import { Node } from '@n8n-clone/shared/types';
 
 export interface CreateWorkflowDto {
   name: string;
@@ -31,23 +34,39 @@ export class WorkflowsController {
   private readonly logger = new Logger(WorkflowsController.name);
 
   constructor(
-    private readonly httpService: HttpService
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @Post()
+  @ApiSuccessResponse('Workflow created successfully')
+  @ApiErrorResponse(400, 'Bad Request')
   async createWorkflow(@Body() dto: CreateWorkflowDto) {
     this.logger.log(`Creating workflow: ${dto.name}`);
 
     try {
-      // Route to workflow service
-      const response = await this.httpService.axiosRef.post(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows`,
-        dto
+      const nodes: Node[] = dto.nodes.map(node => ({
+        id: node.id,
+        name: node.name,
+        type: node.type,
+        parameters: node.parameters || {},
+        credentials: node.credentials
+      }));
+
+      const workflowId = await this.commandBus.execute(
+        new CreateWorkflowCommand(
+          dto.name,
+          nodes,
+          dto.nodes[0]?.id || '', // Assuming first node is trigger
+          false
+        )
       );
 
       return {
         success: true,
-        data: response.data
+        message: 'Workflow created successfully',
+        data: { id: workflowId },
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error('Failed to create workflow:', error);
@@ -56,6 +75,7 @@ export class WorkflowsController {
   }
 
   @Get()
+  @ApiSuccessResponse('Workflows retrieved successfully')
   async getWorkflows(
     @Query('limit') limit: number = 50,
     @Query('offset') offset: number = 0,
@@ -63,20 +83,13 @@ export class WorkflowsController {
     @Query('active') active?: boolean
   ) {
     try {
-      const params = new URLSearchParams({
-        limit: limit.toString(),
-        offset: offset.toString(),
-        ...(tags && { tags }),
-        ...(active !== undefined && { active: active.toString() })
-      });
-
-      const response = await this.httpService.axiosRef.get(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows?${params}`
-      );
+      const workflows = await this.queryBus.execute(new GetWorkflowsQuery());
 
       return {
         success: true,
-        data: response.data
+        message: 'Workflows retrieved successfully',
+        data: workflows,
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error('Failed to get workflows:', error);
@@ -85,15 +98,27 @@ export class WorkflowsController {
   }
 
   @Get(':workflowId')
+  @ApiSuccessResponse('Workflow retrieved successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async getWorkflow(@Param('workflowId') workflowId: string) {
     try {
-      const response = await this.httpService.axiosRef.get(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows/${workflowId}`
+      const workflow = await this.queryBus.execute(
+        new GetWorkflowByIdQuery(workflowId)
       );
+
+      if (!workflow) {
+        return {
+          success: false,
+          message: 'Workflow not found',
+          timestamp: new Date().toISOString()
+        };
+      }
 
       return {
         success: true,
-        data: response.data
+        message: 'Workflow retrieved successfully',
+        data: workflow,
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to get workflow ${workflowId}:`, error);
@@ -102,6 +127,8 @@ export class WorkflowsController {
   }
 
   @Put(':workflowId')
+  @ApiSuccessResponse('Workflow updated successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async updateWorkflow(
     @Param('workflowId') workflowId: string,
     @Body() dto: UpdateWorkflowDto
@@ -109,14 +136,11 @@ export class WorkflowsController {
     this.logger.log(`Updating workflow: ${workflowId}`);
 
     try {
-      const response = await this.httpService.axiosRef.put(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows/${workflowId}`,
-        dto
-      );
-
+      // TODO: Implement update workflow command
       return {
         success: true,
-        data: response.data
+        message: 'Workflow update feature coming soon',
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to update workflow ${workflowId}:`, error);
@@ -125,17 +149,17 @@ export class WorkflowsController {
   }
 
   @Delete(':workflowId')
+  @ApiSuccessResponse('Workflow deleted successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async deleteWorkflow(@Param('workflowId') workflowId: string) {
     this.logger.log(`Deleting workflow: ${workflowId}`);
 
     try {
-      await this.httpService.axiosRef.delete(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows/${workflowId}`
-      );
-
+      // TODO: Implement delete workflow command
       return {
         success: true,
-        message: 'Workflow deleted successfully'
+        message: 'Workflow delete feature coming soon',
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to delete workflow ${workflowId}:`, error);
@@ -144,17 +168,17 @@ export class WorkflowsController {
   }
 
   @Put(':workflowId/activate')
+  @ApiSuccessResponse('Workflow activated successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async activateWorkflow(@Param('workflowId') workflowId: string) {
     this.logger.log(`Activating workflow: ${workflowId}`);
 
     try {
-      const response = await this.httpService.axiosRef.put(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows/${workflowId}/activate`
-      );
-
+      // TODO: Implement activate workflow command
       return {
         success: true,
-        data: response.data
+        message: 'Workflow activation feature coming soon',
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to activate workflow ${workflowId}:`, error);
@@ -163,17 +187,17 @@ export class WorkflowsController {
   }
 
   @Put(':workflowId/deactivate')
+  @ApiSuccessResponse('Workflow deactivated successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async deactivateWorkflow(@Param('workflowId') workflowId: string) {
     this.logger.log(`Deactivating workflow: ${workflowId}`);
 
     try {
-      const response = await this.httpService.axiosRef.put(
-        `${process.env.WORKFLOW_SERVICE_URL}/workflows/${workflowId}/deactivate`
-      );
-
+      // TODO: Implement deactivate workflow command
       return {
         success: true,
-        data: response.data
+        message: 'Workflow deactivation feature coming soon',
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to deactivate workflow ${workflowId}:`, error);
@@ -182,6 +206,8 @@ export class WorkflowsController {
   }
 
   @Post(':workflowId/execute')
+  @ApiSuccessResponse('Workflow execution started successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async executeWorkflow(
     @Param('workflowId') workflowId: string,
     @Body() dto: ExecuteWorkflowDto
@@ -189,17 +215,12 @@ export class WorkflowsController {
     this.logger.log(`Executing workflow: ${workflowId}`);
 
     try {
-      const response = await this.httpService.axiosRef.post(
-        `${process.env.WORKFLOW_ORCHESTRATOR_URL}/executions`,
-        {
-          workflowId,
-          ...dto
-        }
-      );
-
+      // TODO: Implement execute workflow command
       return {
         success: true,
-        data: response.data
+        message: 'Workflow execution feature coming soon',
+        data: { workflowId, executionId: 'temp-execution-id' },
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to execute workflow ${workflowId}:`, error);
@@ -208,25 +229,20 @@ export class WorkflowsController {
   }
 
   @Get(':workflowId/executions')
+  @ApiSuccessResponse('Workflow executions retrieved successfully')
+  @ApiErrorResponse(404, 'Workflow not found')
   async getWorkflowExecutions(
     @Param('workflowId') workflowId: string,
     @Query('limit') limit: number = 50,
     @Query('offset') offset: number = 0
   ) {
     try {
-      const params = new URLSearchParams({
-        workflowId,
-        limit: limit.toString(),
-        offset: offset.toString()
-      });
-
-      const response = await this.httpService.axiosRef.get(
-        `${process.env.EXECUTION_HISTORY_URL}/executions?${params}`
-      );
-
+      // TODO: Implement get workflow executions query
       return {
         success: true,
-        data: response.data
+        message: 'Workflow executions feature coming soon',
+        data: [],
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`Failed to get executions for workflow ${workflowId}:`, error);
