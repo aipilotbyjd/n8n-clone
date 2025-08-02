@@ -78,7 +78,11 @@
     "vm2": "^3.9.19",
     "winston": "^3.17.0",
     "helmet": "^7.1.0",
-    "@nestjs/terminus": "^10.2.3"
+    "@nestjs/terminus": "^10.2.3",
+    "speakeasy": "^2.0.0",
+    "qrcode": "^1.5.3",
+    "@types/speakeasy": "^2.0.10",
+    "@types/qrcode": "^1.5.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

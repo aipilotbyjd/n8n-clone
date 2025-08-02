@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UnauthorizedException, Inject } from '@nestjs/common';
 import { LoginCommand } from '../login.command';
 import { UserEntity, IUserRepository } from '@n8n-clone/domain/user';
-import { JwtAuthService } from '@n8n-clone/infrastructure/security';
+import { JwtAuthService, LoginResult } from '@n8n-clone/infrastructure/security';
 import { USER_REPOSITORY } from '@n8n-clone/shared/common';
 
 @CommandHandler(LoginCommand)
