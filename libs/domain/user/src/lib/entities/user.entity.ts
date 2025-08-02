@@ -15,7 +15,7 @@ export class UserEntity extends AggregateRoot {
     firstName: string,
     lastName: string,
     hashedPassword: string,
-    role: UserRole = UserRole.USER,
+    role: UserRole = UserRole.VIEWER,
     isActive: boolean = true,
   ) {
     super(id);

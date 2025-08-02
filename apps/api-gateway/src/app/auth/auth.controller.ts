@@ -39,7 +39,7 @@ export class AuthController {
           dto.password,
           dto.firstName,
           dto.lastName,
-          dto.role || UserRole.USER,
+          dto.role || UserRole.VIEWER,
         ),
       );
 

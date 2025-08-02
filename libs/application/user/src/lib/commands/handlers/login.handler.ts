@@ -35,11 +35,88 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Generate token and return login result
-    return this.jwtAuthService.login({
+    // Generate tokens and return login result
+    const { accessToken, refreshToken } = await this.jwtAuthService.generateTokens({
       id: user.id,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
       role: user.role,
-    });
+      isActive: user.isActive,
+      workspaceId: undefined,
+      profile: {
+        avatar: undefined,
+        timezone: 'UTC',
+        language: 'en',
+        department: undefined,
+        jobTitle: undefined,
+        phoneNumber: undefined,
+        bio: undefined,
+      },
+      preferences: {
+        theme: 'light' as const,
+        emailNotifications: true,
+        slackNotifications: false,
+        webhookNotifications: true,
+        executionNotifications: true,
+        marketingEmails: false,
+      },
+      security: {
+        mfaEnabled: false,
+        mfaSecret: undefined,
+        backupCodes: undefined,
+        passwordLastChanged: new Date(),
+        loginAttempts: 0,
+        lockedUntil: undefined,
+        sessionTimeout: 1440,
+      },
+      lastLoginAt: undefined,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    } as any);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isActive: user.isActive,
+        role: user.role,
+        workspaceId: undefined,
+        profile: {
+          avatar: undefined,
+          timezone: 'UTC',
+          language: 'en',
+          department: undefined,
+          jobTitle: undefined,
+          phoneNumber: undefined,
+          bio: undefined,
+        },
+        preferences: {
+          theme: 'light' as const,
+          emailNotifications: true,
+          slackNotifications: false,
+          webhookNotifications: true,
+          executionNotifications: true,
+          marketingEmails: false,
+        },
+        security: {
+          mfaEnabled: false,
+          mfaSecret: undefined,
+          backupCodes: undefined,
+          passwordLastChanged: new Date(),
+          loginAttempts: 0,
+          lockedUntil: undefined,
+          sessionTimeout: 1440,
+        },
+        lastLoginAt: undefined,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      accessToken,
+      refreshToken,
+      expiresIn: 15 * 60, // 15 minutes
+    };
   }
 }

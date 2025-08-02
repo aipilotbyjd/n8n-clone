@@ -21,7 +21,7 @@ export class UserSchema {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.USER,
+    default: UserRole.VIEWER,
   })
   role!: UserRole;
 
