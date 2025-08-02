@@ -1,0 +1,30 @@
+{
+  "name": "domain-variables",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/variables/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/domain/variables",
+        "main": "libs/domain/variables/src/index.ts",
+        "tsConfig": "libs/domain/variables/tsconfig.lib.json",
+        "assets": ["libs/domain/variables/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs domain-variables {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/domain/variables/**/*.ts"]
+      }
+    }
+  }
+}

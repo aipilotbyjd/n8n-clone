@@ -12,18 +12,26 @@
     "module": "esnext",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
+    "noPropertyAccessFromIndexSignature": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@n8n-clone/application-workflow": ["libs/application/workflow/index.ts"],
+      "@n8n-clone/application/credentials": [
+        "libs/application/credentials/src/index.ts"
+      ],
       "@n8n-clone/application/execution": [
         "libs/application/execution/src/index.ts"
       ],
       "@n8n-clone/application/nodes": ["libs/application/nodes/src/index.ts"],
+      "@n8n-clone/application/triggers": [
+        "libs/application/triggers/src/index.ts"
+      ],
       "@n8n-clone/application/user": ["libs/application/user/src/index.ts"],
       "@n8n-clone/application/user-management": [
         "libs/application/user/src/index.ts"
       ],
+      "@n8n-clone/application/variables": ["libs/application/variables/src/index.ts"],
       "@n8n-clone/application/workflow": [
         "libs/application/workflow/src/index.ts"
       ],
@@ -31,9 +39,12 @@
       "@n8n-clone/domain-user": ["libs/domain/user/index.ts"],
       "@n8n-clone/domain-workflow": ["libs/domain/workflow/index.ts"],
       "@n8n-clone/domain/core": ["libs/domain/core/src/index.ts"],
+      "@n8n-clone/domain/credentials": ["libs/domain/credentials/src/index.ts"],
       "@n8n-clone/domain/execution": ["libs/domain/execution/src/index.ts"],
       "@n8n-clone/domain/nodes": ["libs/domain/nodes/src/index.ts"],
+      "@n8n-clone/domain/triggers": ["libs/domain/triggers/src/index.ts"],
       "@n8n-clone/domain/user": ["libs/domain/user/src/index.ts"],
+      "@n8n-clone/domain/variables": ["libs/domain/variables/src/index.ts"],
       "@n8n-clone/domain/workflow": ["libs/domain/workflow/src/index.ts"],
       "@n8n-clone/infrastructure": ["libs/infrastructure/index.ts"],
       "@n8n-clone/infrastructure/auth": [

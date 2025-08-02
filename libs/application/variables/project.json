@@ -1,0 +1,30 @@
+{
+  "name": "application-variables",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/application/variables/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/application/variables",
+        "main": "libs/application/variables/src/index.ts",
+        "tsConfig": "libs/application/variables/tsconfig.lib.json",
+        "assets": ["libs/application/variables/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs application-variables {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/application/variables/**/*.ts"]
+      }
+    }
+  }
+}
