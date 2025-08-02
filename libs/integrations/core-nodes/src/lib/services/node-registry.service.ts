@@ -65,6 +65,37 @@ export class NodeRegistryService {
   private initializeCoreNodes(): void {
     // Initialize core nodes on service startup
     this.logger.log('Initializing core nodes...');
+    
+    // Import and register core nodes
+    import('../nodes/start/start.node').then(({ StartNode }) => {
+      this.registerNode(new StartNode());
+    });
+    
+    import('../nodes/set/set.node').then(({ SetNode }) => {
+      this.registerNode(new SetNode());
+    });
+    
+    import('../nodes/if/if.node').then(({ IfNode }) => {
+      this.registerNode(new IfNode());
+    });
+    
+    import('../nodes/http-request/http-request.node').then(({ HttpRequestNode }) => {
+      this.registerNode(new HttpRequestNode());
+    });
+    
+    import('../nodes/function/function.node').then(({ FunctionNode }) => {
+      this.registerNode(new FunctionNode());
+    });
+    
+    import('../nodes/code/code.node').then(({ CodeNode }) => {
+      this.registerNode(new CodeNode());
+    });
+    
+    import('../nodes/merge/merge.node').then(({ MergeNode }) => {
+      this.registerNode(new MergeNode());
+    });
+    
+    this.logger.log('Core nodes initialization completed');
   }
 
   registerNode(nodeInstance: INodeType): void {
