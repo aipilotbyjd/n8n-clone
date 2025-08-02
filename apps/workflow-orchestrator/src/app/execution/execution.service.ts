@@ -6,7 +6,7 @@ import { ExecuteWorkflowCommand } from './commands/execute-workflow.command';
 import { StopExecutionCommand } from './commands/stop-execution.command';
 import { RetryExecutionCommand } from './commands/retry-execution.command';
 import { GetExecutionStatusQuery } from './queries/get-execution-status.query';
-import { ExecutionStatus } from '@n8n-clone/shared';
+import { ExecutionStatus } from '@n8n-clone/shared/types';
 
 @Injectable()
 export class ExecutionService {

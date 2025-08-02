@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { ExecutionStatus } from '@n8n-clone/shared';
+import { ExecutionStatus } from '@n8n-clone/shared/types';
 
 export interface NodeExecutionContext {
   executionId: string;

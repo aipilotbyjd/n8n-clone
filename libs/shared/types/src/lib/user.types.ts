@@ -105,6 +105,32 @@ export interface UpdateUserDto {
   preferences?: Partial<UserPreferences>;
 }
 
+export interface LoginDto {
+  email: string;
+  password: string;
+  mfaCode?: string;
+  rememberMe?: boolean;
+}
+
+export interface AuthResponseDto {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  requiresMfa?: boolean;
+  mfaToken?: string;
+}
+
+export interface UpdateUserDto {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  isActive?: boolean;
+  role?: UserRole;
+  profile?: Partial<UserProfile>;
+  preferences?: Partial<UserPreferences>;
+}
+
 export interface PasswordPolicy {
   minLength: number;
   maxLength: number;

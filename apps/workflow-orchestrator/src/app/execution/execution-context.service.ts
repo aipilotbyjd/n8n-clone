@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { WorkflowExecutionMode, WorkflowExecutionSource } from '@n8n-clone/shared';
+import { WorkflowExecutionMode, WorkflowExecutionSource } from '@n8n-clone/shared/types';
 
 export interface ExecutionContext {
   executionId: string;

@@ -182,7 +182,7 @@ export class Trigger extends AggregateRoot {
   }
 
   private calculateCronNextTrigger(): void {
-    const cronExpression = this._configuration.cronExpression;
+    const cronExpression = this._configuration['cronExpression'];
     if (cronExpression) {
       // This would use a cron library like node-cron to calculate next execution
       // For now, we'll set it to 1 hour from now as a placeholder
@@ -191,12 +191,12 @@ export class Trigger extends AggregateRoot {
   }
 
   private calculateIntervalNextTrigger(): void {
-    const intervalMinutes = this._configuration.intervalMinutes || 60;
+    const intervalMinutes = this._configuration['intervalMinutes'] || 60;
     this._nextTrigger = new Date(Date.now() + intervalMinutes * 60 * 1000);
   }
 
   private calculatePollingNextTrigger(): void {
-    const pollingIntervalMinutes = this._configuration.pollingIntervalMinutes || 5;
+    const pollingIntervalMinutes = this._configuration['pollingIntervalMinutes'] || 5;
     this._nextTrigger = new Date(Date.now() + pollingIntervalMinutes * 60 * 1000);
   }
 

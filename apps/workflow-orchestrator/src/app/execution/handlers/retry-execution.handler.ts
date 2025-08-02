@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RetryExecutionCommand } from '../commands/retry-execution.command';
 import { WorkflowExecutionEngine } from '../workflow-execution-engine.service';
 import { ExecutionRetryEvent } from '../events/execution-retry.event';
-import { ExecutionStatus } from '@n8n-clone/shared';
+import { ExecutionStatus } from '@n8n-clone/shared/types';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

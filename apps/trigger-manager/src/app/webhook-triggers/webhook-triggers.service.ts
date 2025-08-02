@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { HttpService } from '@nestjs/axios';
-import { TriggerExecutionResult, TriggerEvent, WebhookTriggerConfig } from '@n8n-clone/shared';
+import { TriggerExecutionResult, TriggerEvent, WebhookTriggerConfig } from '@n8n-clone/shared/types';
 
 @Injectable()
 export class WebhookTriggersService {

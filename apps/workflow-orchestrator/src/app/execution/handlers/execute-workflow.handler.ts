@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ExecuteWorkflowCommand } from '../commands/execute-workflow.command';
 import { WorkflowExecutionEngine } from '../workflow-execution-engine.service';
 import { ExecutionStartedEvent } from '../events/execution-started.event';
-import { ExecutionStatus } from '@n8n-clone/shared';
+import { ExecutionStatus } from '@n8n-clone/shared/types';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

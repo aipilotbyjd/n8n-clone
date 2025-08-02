@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Put, Delete, Body, Param, Query, Logger } from '@nestjs/common';
 import { ExecutionService } from './execution.service';
-import { ExecutionStatus } from '@n8n-clone/shared';
+import { ExecutionStatus } from '@n8n-clone/shared/types';
 
 export interface ExecuteWorkflowDto {
   workflowId: string;

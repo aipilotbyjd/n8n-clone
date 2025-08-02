@@ -15,7 +15,7 @@ export class EncryptionService {
 
   constructor() {
     // In production, this should come from environment variables or secure key management
-    this.key = crypto.scryptSync(process.env.ENCRYPTION_PASSWORD || 'default-key', 'salt', 32);
+    this.key = crypto.scryptSync(process.env['ENCRYPTION_PASSWORD'] || 'default-key', 'salt', 32);
   }
 
   encrypt(plaintext: string): EncryptedData {

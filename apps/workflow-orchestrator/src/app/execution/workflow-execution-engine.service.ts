@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { HttpService } from '@nestjs/axios';
-import { ExecutionStatus, WorkflowExecutionMode, WorkflowExecutionSource } from '@n8n-clone/shared';
+import { ExecutionStatus, WorkflowExecutionMode, WorkflowExecutionSource } from '@n8n-clone/shared/types';
 import { ExecutionCompletedEvent } from './events/execution-completed.event';
 import { ExecutionFailedEvent } from './events/execution-failed.event';
 import { NodeExecutionService } from './node-execution.service';

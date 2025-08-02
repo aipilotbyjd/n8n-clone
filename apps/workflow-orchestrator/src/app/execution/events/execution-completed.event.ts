@@ -1,4 +1,4 @@
-import { ExecutionStatus } from '@n8n-clone/shared';
+import { ExecutionStatus } from '@n8n-clone/shared/types';
 
 export class ExecutionCompletedEvent {
   constructor(

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CronTriggerConfig, TriggerExecutionResult } from '@n8n-clone/shared';
+import { CronTriggerConfig, TriggerExecutionResult } from '@n8n-clone/shared/types';
 
 @Injectable()
 export class CronSchedulerService {
