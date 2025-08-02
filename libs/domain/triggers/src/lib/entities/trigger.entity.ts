@@ -35,7 +35,7 @@ export class Trigger extends AggregateRoot {
     name: string,
     configuration: Record<string, any>,
     status: TriggerStatus = TriggerStatus.INACTIVE,
-    triggerCount: number = 0,
+    triggerCount = 0,
   ) {
     super(id);
     this._workflowId = workflowId;

@@ -6,6 +6,6 @@ export class CreateWorkflowCommand implements ICommand {
     public readonly name: string,
     public readonly nodes: Node[],
     public readonly triggerNodeId: string,
-    public readonly active: boolean = false,
+    public readonly active = false,
   ) {}
 }

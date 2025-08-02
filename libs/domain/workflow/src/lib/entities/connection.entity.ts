@@ -7,8 +7,8 @@ export class Connection {
   constructor(
     sourceNodeId: string,
     targetNodeId: string,
-    sourceOutputIndex: number = 0,
-    targetInputIndex: number = 0
+    sourceOutputIndex = 0,
+    targetInputIndex = 0
   ) {
     this._sourceNodeId = sourceNodeId;
     this._targetNodeId = targetNodeId;

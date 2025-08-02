@@ -11,8 +11,14 @@ export class GetUsersHandler implements IQueryHandler<GetUsersQuery> {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(query: GetUsersQuery) {
+  async execute(query: GetUsersQuery): Promise<{ users: any[]; total: number }> {
+    const { limit, offset, filters } = query;
+    // TODO: Implement proper pagination and filtering
+    console.log(`Getting users with limit: ${limit}, offset: ${offset}, filters:`, filters);
     const users = await this.userRepository.findAll();
-    return users.map(user => user.toJSON());
+    return {
+      users: users.map(user => user.toJSON()),
+      total: users.length
+    };
   }
 }

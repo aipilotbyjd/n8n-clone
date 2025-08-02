@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { VM } from 'vm2';
+import * as vm from 'vm';
+import { promisify } from 'util';
 
 export interface ExecutionContext {
   $input: any;
@@ -28,23 +29,38 @@ export class SecureExecutorService {
   async executeJavaScript(
     code: string,
     context: Record<string, any>,
-    timeout: number = 30000
+    timeout = 30000
   ): Promise<any> {
     this.logger.log('Executing JavaScript code in secure sandbox');
 
     try {
       // Create execution logs
       const logs: string[] = [];
+      
+      // Set up sandbox context
+      const sandboxContext = this.createSandboxContext(context, logs);
+      
+      // Create VM context with restricted global scope
+      const vmContext = vm.createContext(sandboxContext);
 
-      // Create secure VM instance
-      const vm = new VM({
+      // Wrap code to capture the result
+      const wrappedCode = `
+        (function() {
+          try {
+            ${code}
+          } catch (error) {
+            throw error;
+          }
+        })()
+      `;
+
+      // Execute the code with timeout
+      const result = vm.runInContext(wrappedCode, vmContext, {
         timeout,
-        sandbox: this.createSandboxContext(context, logs)
+        displayErrors: true,
+        breakOnSigint: true
       });
-
-      // Execute the code
-      const result = vm.run(code);
-
+      
       return {
         result,
         logs,
@@ -93,14 +109,12 @@ export class SecureExecutorService {
     this.logger.debug('Validating JavaScript code');
 
     try {
-      // Create a VM for validation (with shorter timeout)
-      const vm = new VM({
-        timeout: 1000,
-        sandbox: this.createMinimalSandbox()
-      });
-
+      // Create minimal sandbox context for validation
+      const minimalContext = this.createMinimalSandbox();
+      const vmContext = vm.createContext(minimalContext);
+      
       // Try to compile the code without executing
-      vm.run(`(function() { ${code} })`);
+      new vm.Script(`(function() { ${code} })`);
 
       return { valid: true, errors: [] };
 
@@ -118,13 +132,13 @@ export class SecureExecutorService {
 
   private createSandboxContext(context: Record<string, any>, logs: string[]): ExecutionContext {
     return {
-      $input: context.$input || {},
-      $json: context.$json || context.$input || {},
-      $node: context.$node || {},
-      $workflow: context.$workflow || {},
-      $execution: context.$execution || {},
-      $vars: context.$vars || {},
-      $parameters: context.$parameters || {},
+      $input: context['$input'] || {},
+      $json: context['$json'] || context['$input'] || {},
+      $node: context['$node'] || {},
+      $workflow: context['$workflow'] || {},
+      $execution: context['$execution'] || {},
+      $vars: context['$vars'] || {},
+      $parameters: context['$parameters'] || {},
       
       // Console with logging capture
       console: {

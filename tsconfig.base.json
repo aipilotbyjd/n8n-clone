@@ -16,7 +16,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@n8n-clone/application-workflow": ["libs/application/workflow/index.ts"],
       "@n8n-clone/application/credentials": [
         "libs/application/credentials/src/index.ts"
       ],
@@ -28,16 +27,10 @@
         "libs/application/triggers/src/index.ts"
       ],
       "@n8n-clone/application/user": ["libs/application/user/src/index.ts"],
-      "@n8n-clone/application/user-management": [
-        "libs/application/user/src/index.ts"
-      ],
       "@n8n-clone/application/variables": ["libs/application/variables/src/index.ts"],
       "@n8n-clone/application/workflow": [
         "libs/application/workflow/src/index.ts"
       ],
-      "@n8n-clone/domain-execution": ["libs/domain/execution/index.ts"],
-      "@n8n-clone/domain-user": ["libs/domain/user/index.ts"],
-      "@n8n-clone/domain-workflow": ["libs/domain/workflow/index.ts"],
       "@n8n-clone/domain/core": ["libs/domain/core/src/index.ts"],
       "@n8n-clone/domain/credentials": ["libs/domain/credentials/src/index.ts"],
       "@n8n-clone/domain/execution": ["libs/domain/execution/src/index.ts"],
@@ -46,7 +39,6 @@
       "@n8n-clone/domain/user": ["libs/domain/user/src/index.ts"],
       "@n8n-clone/domain/variables": ["libs/domain/variables/src/index.ts"],
       "@n8n-clone/domain/workflow": ["libs/domain/workflow/src/index.ts"],
-      "@n8n-clone/infrastructure": ["libs/infrastructure/index.ts"],
       "@n8n-clone/infrastructure/auth": [
         "libs/infrastructure/auth/src/index.ts"
       ],
@@ -71,7 +63,6 @@
       "@n8n-clone/integrations/http-nodes": [
         "libs/integrations/http-nodes/src/index.ts"
       ],
-      "@n8n-clone/shared": ["libs/shared/index.ts"],
       "@n8n-clone/shared/common": ["libs/shared/common/src/index.ts"],
       "@n8n-clone/shared/types": ["libs/shared/types/src/index.ts"],
       "@n8n-clone/shared/utils": ["libs/shared/utils/src/index.ts"],

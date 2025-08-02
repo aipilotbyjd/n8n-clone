@@ -35,7 +35,7 @@ export class FunctionNode implements INodeType {
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
       const item = items[itemIndex];
       try {
-        /* eslint-disable no-eval */
+         
         eval(functionCode);
         returnData.push(item);
       } catch (error) {

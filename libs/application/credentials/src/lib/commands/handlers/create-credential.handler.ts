@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { CreateCredentialCommand } from '../create-credential.command';
-import { Credential } from '@n8n-clone/domain/credentials';
+import { Credential, CredentialType } from '@n8n-clone/domain/credentials';
 import { ICredentialRepository } from '@n8n-clone/domain/credentials';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class CreateCredentialHandler implements ICommandHandler<CreateCredential
     const credential = new Credential(
       Math.random().toString(36).substr(2, 9), // Generate ID
       name,
-      type,
+      type as CredentialType,
       data,
       userId,
     );

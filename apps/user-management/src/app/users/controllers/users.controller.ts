@@ -37,8 +37,8 @@ export class UsersController {
 
   @Get()
   async getUsers(
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0,
+    @Query('limit') limit = 50,
+    @Query('offset') offset = 0,
     @Query('role') role?: string,
     @Query('status') status?: string,
     @Query('search') search?: string,

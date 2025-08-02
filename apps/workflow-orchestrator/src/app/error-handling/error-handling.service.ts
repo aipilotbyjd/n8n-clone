@@ -101,7 +101,7 @@ export class ErrorHandlingService {
     };
   }
 
-  createRetryPolicy(maxRetries: number = 3, interval: number = 1000): ErrorPolicy {
+  createRetryPolicy(maxRetries = 3, interval = 1000): ErrorPolicy {
     return {
       continueOnFail: false,
       retryOnFail: true,

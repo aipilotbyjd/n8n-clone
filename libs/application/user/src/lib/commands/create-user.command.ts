@@ -8,5 +8,6 @@ export class CreateUserCommand implements ICommand {
     public readonly firstName: string,
     public readonly lastName: string,
     public readonly role: UserRole = UserRole.VIEWER,
+    public readonly workspaceId?: string,
   ) {}
 }

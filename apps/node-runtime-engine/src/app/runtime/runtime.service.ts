@@ -97,7 +97,7 @@ export class RuntimeService {
   async executeJavaScript(
     code: string,
     context: Record<string, any>,
-    timeout: number = 30000
+    timeout = 30000
   ): Promise<any> {
     return this.secureExecutor.executeJavaScript(code, context, timeout);
   }

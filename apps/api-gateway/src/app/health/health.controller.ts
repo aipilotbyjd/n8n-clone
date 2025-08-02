@@ -1,22 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { 
-  HealthCheckService, 
-  HealthCheck, 
-  TypeOrmHealthIndicator,
-  MemoryHealthIndicator,
-  DiskHealthIndicator 
-} from '@nestjs/terminus';
+import * as fs from 'fs';
+import * as os from 'os';
 
 @ApiTags('Health')
 @Controller('health')
 export class HealthController {
-  constructor(
-    private health: HealthCheckService,
-    private db: TypeOrmHealthIndicator,
-    private memory: MemoryHealthIndicator,
-    private disk: DiskHealthIndicator,
-  ) {}
+  constructor() {}
 
   @Get()
   @ApiOperation({ 
@@ -45,22 +35,29 @@ export class HealthController {
     }
   })
   @ApiResponse({ status: 503, description: 'Health check failed' })
-  @HealthCheck()
   check() {
-    return this.health.check([
-      // Database health check
-      () => this.db.pingCheck('database'),
-      
-      // Memory health checks
-      () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
-      () => this.memory.checkRSS('memory_rss', 150 * 1024 * 1024),
-      
-      // Disk health check
-      () => this.disk.checkStorage('storage', { 
-        path: '/', 
-        thresholdPercent: 0.9 
-      }),
-    ]);
+    const memory = process.memoryUsage();
+    const freeMemory = os.freemem();
+    const totalMemory = os.totalmem();
+    
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      memory: {
+        heap_used: memory.heapUsed,
+        heap_total: memory.heapTotal,
+        rss: memory.rss,
+        external: memory.external,
+        system_free: freeMemory,
+        system_total: totalMemory
+      },
+      cpu: {
+        load_average: os.loadavg(),
+        cpu_count: os.cpus().length
+      },
+      version: process.env['npm_package_version'] || '1.0.0'
+    };
   }
 
   @Get('ready')

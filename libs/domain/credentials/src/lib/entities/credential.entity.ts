@@ -22,7 +22,7 @@ export class Credential extends AggregateRoot {
     type: CredentialType,
     encryptedData: string,
     userId: string,
-    isValid: boolean = false,
+    isValid = false,
     testedAt?: Date,
   ) {
     super(id);

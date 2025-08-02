@@ -13,7 +13,7 @@ export class Variable extends AggregateRoot {
     value: string,
     type: string,
     scope: string,
-    isProtected: boolean = false,
+    isProtected = false,
   ) {
     super(id);
     this._name = name;

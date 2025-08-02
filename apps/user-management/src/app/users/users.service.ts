@@ -55,8 +55,8 @@ export class UsersService {
   }
 
   async getUsers(
-    limit: number = 50,
-    offset: number = 0,
+    limit = 50,
+    offset = 0,
     filters?: {
       role?: string;
       status?: string;

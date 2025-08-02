@@ -5,6 +5,13 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@n8n-clone/shared/common": "*",
+    "@n8n-clone/domain/user": "*",
+    "@n8n-clone/shared/types": "*",
+    "typeorm": "^0.3.25",
     "tslib": "^2.3.0"
   }
 }

@@ -3,8 +3,8 @@ export class ExecuteWorkflowCommand {
     public readonly workflowId: string,
     public readonly inputData?: any,
     public readonly userId?: string,
-    public readonly source: string = 'manual',
-    public readonly async: boolean = false,
+    public readonly source = 'manual',
+    public readonly async = false,
     public readonly options?: {
       loadStaticData?: boolean;
       startNodes?: string[];

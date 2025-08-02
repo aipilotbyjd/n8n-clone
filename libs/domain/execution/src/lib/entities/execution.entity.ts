@@ -62,8 +62,8 @@ export class WorkflowExecution {
     private _error?: string,
     private readonly _userId?: string,
     private readonly _workflowName?: string,
-    private _retryCount: number = 0,
-    private _maxRetries: number = 0
+    private _retryCount = 0,
+    private _maxRetries = 0
   ) { }
 
   // Getters
@@ -326,7 +326,7 @@ export class WorkflowExecution {
     input?: ExecutionData,
     userId?: string,
     workflowName?: string,
-    maxRetries: number = 0
+    maxRetries = 0
   ): WorkflowExecution {
     return new WorkflowExecution(
       ExecutionId.generate(),

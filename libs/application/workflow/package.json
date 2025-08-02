@@ -5,6 +5,11 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/cqrs": "^11.0.3",
+    "@n8n-clone/domain/workflow": "*",
+    "@n8n-clone/shared/types": "*",
+    "uuid": "^11.1.0",
     "tslib": "^2.3.0"
   }
 }

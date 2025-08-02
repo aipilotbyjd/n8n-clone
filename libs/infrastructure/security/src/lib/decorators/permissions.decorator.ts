@@ -82,7 +82,7 @@ export const RateLimitLenient = () => RateLimit({ ttl: 60, limit: 100 }); // 100
 
 // Session management decorator
 export const REQUIRE_FRESH_SESSION_KEY = 'requireFreshSession';
-export const RequireFreshSession = (maxAge: number = 300) => // 5 minutes default
+export const RequireFreshSession = (maxAge = 300) => // 5 minutes default
   SetMetadata(REQUIRE_FRESH_SESSION_KEY, maxAge);
 
 // MFA requirement decorator

@@ -112,8 +112,8 @@ export class ExecutionController {
   async getExecutions(
     @Query('workflowId') workflowId?: string,
     @Query('status') status?: ExecutionStatus,
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0
+    @Query('limit') limit = 50,
+    @Query('offset') offset = 0
   ) {
     // In a real implementation, this would query the execution history service
     return {

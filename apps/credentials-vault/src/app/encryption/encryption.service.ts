@@ -65,7 +65,7 @@ export class EncryptionService {
     return crypto.timingSafeEqual(Buffer.from(dataHash), Buffer.from(hash));
   }
 
-  generateSecureToken(length: number = 32): string {
+  generateSecureToken(length = 32): string {
     return crypto.randomBytes(length).toString('hex');
   }
 

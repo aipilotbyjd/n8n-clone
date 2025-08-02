@@ -181,7 +181,7 @@ export class AppService {
     return Array.from(this.services.values());
   }
 
-  getAlerts(limit: number = 50): any[] {
+  getAlerts(limit = 50): any[] {
     return this.alerts.slice(0, limit);
   }
 

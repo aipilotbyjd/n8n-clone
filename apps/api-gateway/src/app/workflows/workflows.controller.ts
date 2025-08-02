@@ -89,8 +89,8 @@ export class WorkflowsController {
   @ApiResponse({ status: 200, description: 'Workflows retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getWorkflows(
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0,
+    @Query('limit') limit = 50,
+    @Query('offset') offset = 0,
     @Query('tags') tags?: string,
     @Query('active') active?: boolean
   ) {
@@ -252,8 +252,8 @@ export class WorkflowsController {
   @ApiErrorResponse(404, 'Workflow not found')
   async getWorkflowExecutions(
     @Param('workflowId') workflowId: string,
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0
+    @Query('limit') limit = 50,
+    @Query('offset') offset = 0
   ) {
     try {
       // TODO: Implement get workflow executions query

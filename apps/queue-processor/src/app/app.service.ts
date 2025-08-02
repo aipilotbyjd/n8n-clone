@@ -27,7 +27,7 @@ export class AppService {
     };
   }
 
-  async addJob(jobType: string, payload: any, priority: number = 0): Promise<string> {
+  async addJob(jobType: string, payload: any, priority = 0): Promise<string> {
     const jobId = `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const job = {
       id: jobId,

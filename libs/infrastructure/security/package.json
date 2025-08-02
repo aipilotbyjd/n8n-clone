@@ -5,6 +5,18 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@n8n-clone/shared/types": "*",
+    "rxjs": "^7.8.0",
+    "bcryptjs": "^3.0.2",
+    "uuid": "^11.1.0",
+    "passport-jwt": "^4.0.1",
+    "tslib": "^2.3.0",
+    "speakeasy": "^2.0.0",
+    "qrcode": "^1.5.3"
   }
 }

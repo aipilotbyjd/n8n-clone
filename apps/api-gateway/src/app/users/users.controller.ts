@@ -14,8 +14,8 @@ export class UsersController {
   @Get()
   @ApiSuccessResponse('Users retrieved successfully')
   async getUsers(
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0,
+    @Query('limit') limit = 50,
+    @Query('offset') offset = 0,
   ) {
     try {
       const users = await this.queryBus.execute(new GetUsersQuery());

@@ -18,7 +18,7 @@ export interface JwtPayload {
   exp?: number;
 }
 
-export interface LoginResult extends AuthResponseDto {}
+export type LoginResult = AuthResponseDto
 
 export interface RefreshTokenPayload {
   sub: string;
