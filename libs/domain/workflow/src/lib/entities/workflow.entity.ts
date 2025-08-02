@@ -11,10 +11,10 @@ export class Workflow {
     private readonly _description: string,
     private readonly _settings: Record<string, any>,
     private readonly _tags: string[],
-    private readonly _active: boolean,
+    private _active: boolean,
     private readonly _version: number,
     private readonly _createdAt: Date,
-    private readonly _updatedAt: Date
+    private _updatedAt: Date
   ) {
     this.validateInvariants();
   }
@@ -23,6 +23,13 @@ export class Workflow {
     this.validateForActivation();
     this._active = true;
     this.touch();
+  }
+
+  private validateForActivation(): void {
+    if (this._nodes.size === 0) {
+      throw new Error('Cannot activate workflow without nodes');
+    }
+    // Add other activation validation logic here
   }
 
   deactivate(): void {
@@ -61,7 +68,10 @@ export class Workflow {
     return this.createUpdatedWorkflow({ connections: [...this._connections, connection] });
   }
 
-  private createUpdatedWorkflow(updates: Partial<Workflow>): Workflow {
+  private createUpdatedWorkflow(updates: {
+    nodes?: Map<string, Node>;
+    connections?: Connection[];
+  }): Workflow {
     return new Workflow(
       this._id,
       this._name,
@@ -152,4 +162,32 @@ export class Workflow {
   private touch(): void {
     this._updatedAt = new Date();
   }
+
+  // Workflow execution methods
+  execute(input?: any): Promise<any> {
+    if (!this._active) {
+      throw new Error('Cannot execute inactive workflow');
+    }
+    
+    // This is a placeholder - actual execution logic will be handled by the execution service
+    return Promise.resolve({ status: 'completed', input, output: null });
+  }
+
+  complete(): void {
+    // Mark workflow execution as complete
+    this.touch();
+  }
+
+  // Getters for accessing private fields
+  get id(): WorkflowId { return this._id; }
+  get name(): string { return this._name; }
+  get nodes(): Map<string, Node> { return this._nodes; }
+  get connections(): Connection[] { return this._connections; }
+  get description(): string { return this._description; }
+  get settings(): Record<string, any> { return this._settings; }
+  get tags(): string[] { return this._tags; }
+  get active(): boolean { return this._active; }
+  get version(): number { return this._version; }
+  get createdAt(): Date { return this._createdAt; }
+  get updatedAt(): Date { return this._updatedAt; }
 }
