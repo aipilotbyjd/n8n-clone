@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Logger, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateWorkflowCommand, GetWorkflowsQuery, GetWorkflowByIdQuery } from '@n8n-clone/application/workflow';
 import { ApiSuccessResponse, ApiErrorResponse } from '@n8n-clone/shared/common';
 import { Node } from '@n8n-clone/shared/types';
@@ -29,6 +30,8 @@ export interface ExecuteWorkflowDto {
   source?: string;
 }
 
+@ApiTags('Workflows')
+@ApiBearerAuth('JWT-auth')
 @Controller('workflows')
 export class WorkflowsController {
   private readonly logger = new Logger(WorkflowsController.name);
@@ -39,8 +42,11 @@ export class WorkflowsController {
   ) {}
 
   @Post()
-  @ApiSuccessResponse('Workflow created successfully')
-  @ApiErrorResponse(400, 'Bad Request')
+  @ApiOperation({ summary: 'Create a new workflow', description: 'Creates a new workflow with nodes and connections' })
+  @ApiBody({ type: Object, description: 'Workflow creation data' })
+  @ApiResponse({ status: 201, description: 'Workflow created successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request - Invalid workflow data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async createWorkflow(@Body() dto: CreateWorkflowDto) {
     this.logger.log(`Creating workflow: ${dto.name}`);
 
@@ -75,7 +81,13 @@ export class WorkflowsController {
   }
 
   @Get()
-  @ApiSuccessResponse('Workflows retrieved successfully')
+  @ApiOperation({ summary: 'Get all workflows', description: 'Retrieves a paginated list of workflows' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Number of workflows to return' })
+  @ApiQuery({ name: 'offset', required: false, type: Number, description: 'Number of workflows to skip' })
+  @ApiQuery({ name: 'tags', required: false, type: String, description: 'Filter by tags (comma-separated)' })
+  @ApiQuery({ name: 'active', required: false, type: Boolean, description: 'Filter by active status' })
+  @ApiResponse({ status: 200, description: 'Workflows retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getWorkflows(
     @Query('limit') limit: number = 50,
     @Query('offset') offset: number = 0,
@@ -98,8 +110,11 @@ export class WorkflowsController {
   }
 
   @Get(':workflowId')
-  @ApiSuccessResponse('Workflow retrieved successfully')
-  @ApiErrorResponse(404, 'Workflow not found')
+  @ApiOperation({ summary: 'Get workflow by ID', description: 'Retrieves a specific workflow by its ID' })
+  @ApiParam({ name: 'workflowId', type: 'string', description: 'Workflow ID' })
+  @ApiResponse({ status: 200, description: 'Workflow retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Workflow not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getWorkflow(@Param('workflowId') workflowId: string) {
     try {
       const workflow = await this.queryBus.execute(
@@ -206,8 +221,12 @@ export class WorkflowsController {
   }
 
   @Post(':workflowId/execute')
-  @ApiSuccessResponse('Workflow execution started successfully')
-  @ApiErrorResponse(404, 'Workflow not found')
+  @ApiOperation({ summary: 'Execute workflow', description: 'Executes a workflow with optional input data' })
+  @ApiParam({ name: 'workflowId', type: 'string', description: 'Workflow ID to execute' })
+  @ApiBody({ type: Object, description: 'Execution input data' })
+  @ApiResponse({ status: 200, description: 'Workflow execution started successfully' })
+  @ApiResponse({ status: 404, description: 'Workflow not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async executeWorkflow(
     @Param('workflowId') workflowId: string,
     @Body() dto: ExecuteWorkflowDto

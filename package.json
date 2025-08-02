@@ -19,7 +19,14 @@
     "start:queue-processor": "nx serve queue-processor",
     "start:monitoring-service": "nx serve monitoring-service",
     "test": "nx run-many --target=test --all",
+    "test:watch": "nx run-many --target=test --all --watch",
+    "test:cov": "nx run-many --target=test --all --coverage",
+    "test:integration": "nx run-many --target=test --all --testPathPattern=integration",
+    "test:e2e": "nx run-many --target=e2e --all",
     "lint": "nx run-many --target=lint --all",
+    "lint:fix": "nx run-many --target=lint --all --fix",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
     "docker:dev:up": "cd docker && docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d",
     "docker:dev:down": "cd docker && docker-compose -f docker-compose.dev.yml down",
     "docker:dev:logs": "cd docker && docker-compose -f docker-compose.dev.yml logs -f",
@@ -69,7 +76,9 @@
     "typeorm": "^0.3.25",
     "uuid": "^11.1.0",
     "vm2": "^3.9.19",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "helmet": "^7.1.0",
+    "@nestjs/terminus": "^10.2.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
