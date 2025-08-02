@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "WorkspaceGenerator",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the workspace/microservice",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the workspace?"
+    },
+    "directory": {
+      "type": "string",
+      "description": "A directory where the workspace is placed",
+      "alias": "d"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Add tags to the workspace (used for linting)",
+      "alias": "t"
+    },
+    "microservice": {
+      "type": "boolean",
+      "description": "Generate as a microservice with NestJS",
+      "default": true
+    },
+    "port": {
+      "type": "number",
+      "description": "Port number for the microservice",
+      "default": 3000
+    }
+  },
+  "required": ["name"]
+}

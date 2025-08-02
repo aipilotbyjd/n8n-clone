@@ -1,0 +1,148 @@
+# Default values for n8n-clone
+replicaCount: 1
+
+image:
+  repository: n8n-clone
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: n8n-clone.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Microservices configuration
+microservices:
+  apiGateway:
+    enabled: true
+    port: 3000
+    replicas: 2
+  workflowOrchestrator:
+    enabled: true
+    port: 3001
+    replicas: 3
+  nodeRuntimeEngine:
+    enabled: true
+    port: 3002
+    replicas: 5
+  triggerManager:
+    enabled: true
+    port: 3003
+    replicas: 2
+  credentialsVault:
+    enabled: true
+    port: 3004
+    replicas: 2
+  executionHistory:
+    enabled: true
+    port: 3005
+    replicas: 2
+  templateManager:
+    enabled: true
+    port: 3006
+    replicas: 1
+  userManagement:
+    enabled: true
+    port: 3007
+    replicas: 2
+  notificationHub:
+    enabled: true
+    port: 3008
+    replicas: 1
+  variableManager:
+    enabled: true
+    port: 3009
+    replicas: 1
+  queueProcessor:
+    enabled: true
+    port: 3010
+    replicas: 3
+  monitoringService:
+    enabled: true
+    port: 3011
+    replicas: 1
+
+# Infrastructure dependencies
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "n8n_password"
+    username: "n8n_user"
+    password: "n8n_password"
+    database: "n8n_clone"
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+kafka:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 8Gi
+
+# Environment variables
+env:
+  NODE_ENV: production
+  JWT_SECRET: "your-jwt-secret-change-this"
+  ENCRYPTION_KEY: "your-encryption-key-change-this"

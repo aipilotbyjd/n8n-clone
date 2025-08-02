@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "NodeGenerator",
+  "title": "Integration Node Generator",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the integration node",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the node?"
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Display name for the node in the UI"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of what the node does"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category of the integration node",
+      "enum": ["core", "trigger", "http", "database", "social", "productivity", "finance"],
+      "default": "core"
+    },
+    "version": {
+      "type": "number",
+      "description": "Version of the node",
+      "default": 1
+    },
+    "inputs": {
+      "type": "number",
+      "description": "Number of input connections",
+      "default": 1
+    },
+    "outputs": {
+      "type": "number",
+      "description": "Number of output connections",
+      "default": 1
+    }
+  },
+  "required": ["name"]
+}

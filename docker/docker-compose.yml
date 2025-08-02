@@ -1,0 +1,396 @@
+version: '3.8'
+
+networks:
+  n8n-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  kafka_data:
+  zookeeper_data:
+
+services:
+  # =============================================================================
+  # INFRASTRUCTURE SERVICES
+  # =============================================================================
+  
+  postgres:
+    image: postgres:15-alpine
+    container_name: n8n-postgres
+    environment:
+      POSTGRES_DB: n8n_clone
+      POSTGRES_USER: n8n_user
+      POSTGRES_PASSWORD: n8n_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n_user -d n8n_clone"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: n8n-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+    networks:
+      - n8n-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: n8n-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - n8n-network
+    ports:
+      - "9092:9092"
+
+  # =============================================================================
+  # MICROSERVICES
+  # =============================================================================
+
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.api-gateway
+    container_name: n8n-api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      JWT_SECRET: your-jwt-secret-key
+      # Service URLs
+      WORKFLOW_ORCHESTRATOR_URL: http://workflow-orchestrator:3001
+      NODE_RUNTIME_ENGINE_URL: http://node-runtime-engine:3002
+      TRIGGER_MANAGER_URL: http://trigger-manager:3003
+      CREDENTIALS_VAULT_URL: http://credentials-vault:3004
+      EXECUTION_HISTORY_URL: http://execution-history:3005
+      TEMPLATE_MANAGER_URL: http://template-manager:3006
+      USER_MANAGEMENT_URL: http://user-management:3007
+      NOTIFICATION_HUB_URL: http://notification-hub:3008
+      VARIABLE_MANAGER_URL: http://variable-manager:3009
+      QUEUE_PROCESSOR_URL: http://queue-processor:3010
+      MONITORING_SERVICE_URL: http://monitoring-service:3011
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      workflow-orchestrator:
+        condition: service_started
+      node-runtime-engine:
+        condition: service_started
+      trigger-manager:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  workflow-orchestrator:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: workflow-orchestrator
+    container_name: n8n-workflow-orchestrator
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      NODE_RUNTIME_ENGINE_URL: http://node-runtime-engine:3002
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  node-runtime-engine:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: node-runtime-engine
+    container_name: n8n-node-runtime-engine
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  trigger-manager:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: trigger-manager
+    container_name: n8n-trigger-manager
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  credentials-vault:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: credentials-vault
+    container_name: n8n-credentials-vault
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      ENCRYPTION_KEY: your-encryption-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  execution-history:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: execution-history
+    container_name: n8n-execution-history
+    environment:
+      NODE_ENV: production
+      PORT: 3005
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  template-manager:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: template-manager
+    container_name: n8n-template-manager
+    environment:
+      NODE_ENV: production
+      PORT: 3006
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  user-management:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: user-management
+    container_name: n8n-user-management
+    environment:
+      NODE_ENV: production
+      PORT: 3007
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      JWT_SECRET: your-jwt-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  notification-hub:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: notification-hub
+    container_name: n8n-notification-hub
+    environment:
+      NODE_ENV: production
+      PORT: 3008
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  variable-manager:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: variable-manager
+    container_name: n8n-variable-manager
+    environment:
+      NODE_ENV: production
+      PORT: 3009
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  queue-processor:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: queue-processor
+    container_name: n8n-queue-processor
+    environment:
+      NODE_ENV: production
+      PORT: 3010
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+
+  monitoring-service:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.base
+      args:
+        APP_NAME: monitoring-service
+    container_name: n8n-monitoring-service
+    environment:
+      NODE_ENV: production
+      PORT: 3011
+      DATABASE_URL: postgresql://n8n_user:n8n_password@postgres:5432/n8n_clone
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - n8n-network
+    restart: unless-stopped
+    ports:
+      - "3011:3011"  # Expose monitoring service for external access

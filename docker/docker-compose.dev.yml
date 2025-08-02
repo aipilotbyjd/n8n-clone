@@ -1,0 +1,140 @@
+version: '3.8'
+
+networks:
+  n8n-dev-network:
+    driver: bridge
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  node_modules:
+
+services:
+  # =============================================================================
+  # INFRASTRUCTURE SERVICES
+  # =============================================================================
+  
+  postgres-dev:
+    image: postgres:15
+    container_name: n8n-postgres-dev
+    environment:
+      POSTGRES_DB: n8n_clone_dev
+      POSTGRES_USER: n8n_dev_user
+      POSTGRES_PASSWORD: n8n_dev_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    networks:
+      - n8n-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n_dev_user -d n8n_clone_dev"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-dev:
+    image: redis:7
+    container_name: n8n-redis-dev
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6380:6379"  # Different port to avoid conflicts
+    networks:
+      - n8n-dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =============================================================================
+  # DEVELOPMENT TOOLS
+  # =============================================================================
+
+  # Node.js development container with hot reload
+  dev-environment:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.dev
+    container_name: n8n-dev-environment
+    volumes:
+      - ..:/app                              # Mount entire project for hot reload
+      - node_modules:/app/node_modules       # Use named volume for node_modules
+      - /app/dist                            # Anonymous volume to prevent dist conflicts
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://n8n_dev_user:n8n_dev_password@postgres-dev:5432/n8n_clone_dev
+      REDIS_URL: redis://redis-dev:6379
+      # Enable debugging
+      DEBUG: n8n:*
+      # Hot reload settings
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+    ports:
+      - "3000:3000"   # API Gateway
+      - "3001:3001"   # Workflow Orchestrator
+      - "3002:3002"   # Node Runtime Engine
+      - "3003:3003"   # Trigger Manager
+      - "3004:3004"   # Credentials Vault
+      - "3005:3005"   # Execution History
+      - "3006:3006"   # Template Manager
+      - "3007:3007"   # User Management
+      - "3008:3008"   # Notification Hub
+      - "3009:3009"   # Variable Manager
+      - "3010:3010"   # Queue Processor
+      - "3011:3011"   # Monitoring Service
+      - "9229:9229"   # Node.js Debug Port
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+      redis-dev:
+        condition: service_healthy
+    networks:
+      - n8n-dev-network
+    tty: true
+    stdin_open: true
+    working_dir: /app
+    command: >
+      sh -c "
+        npm install &&
+        npm run start:dev:all
+      "
+
+  # =============================================================================
+  # DEVELOPMENT TOOLS & UTILITIES
+  # =============================================================================
+
+  # Database admin tool
+  adminer:
+    image: adminer
+    container_name: n8n-adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - n8n-dev-network
+    depends_on:
+      - postgres-dev
+
+  # Redis admin tool
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: n8n-redis-commander
+    environment:
+      REDIS_HOSTS: local:redis-dev:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - n8n-dev-network
+    depends_on:
+      - redis-dev
+
+  # MailHog for testing email notifications
+  mailhog:
+    image: mailhog/mailhog
+    container_name: n8n-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - n8n-dev-network

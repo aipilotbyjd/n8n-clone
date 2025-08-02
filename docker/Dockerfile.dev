@@ -1,0 +1,43 @@
+# Development Dockerfile for N8N Clone
+# Optimized for hot reload and debugging
+
+FROM node:18-alpine
+
+# Install development tools
+RUN apk add --no-cache \
+    git \
+    curl \
+    bash \
+    && npm install -g @nestjs/cli nodemon ts-node
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user for development
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001 && \
+    chown -R nestjs:nodejs /app
+
+# Switch to non-root user
+USER nestjs
+
+# Copy package files
+COPY --chown=nestjs:nodejs package*.json ./
+COPY --chown=nestjs:nodejs nx.json ./
+COPY --chown=nestjs:nodejs tsconfig.base.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm install
+
+# Copy source code
+COPY --chown=nestjs:nodejs . .
+
+# Expose ports for all microservices and debugging
+EXPOSE 3000 3001 3002 3003 3004 3005 3006 3007 3008 3009 3010 3011 9229
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Default command for development
+CMD ["npm", "run", "start:dev"]

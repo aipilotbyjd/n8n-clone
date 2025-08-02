@@ -1,0 +1,69 @@
+# Base Dockerfile for N8N Clone Microservices
+# This is a multi-stage build to optimize image size and security
+
+# Stage 1: Build Environment
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm (if using pnpm) or use npm
+RUN npm install -g pnpm
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml* ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Build the application
+# This ARG will be passed during build to specify which app to build
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
+
+# Build the specific application
+RUN npx nx build ${APP_NAME} --prod
+
+# Stage 2: Production Environment
+FROM node:18-alpine AS runtime
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm for production dependencies
+RUN npm install -g pnpm
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml* ./
+
+# Install only production dependencies
+RUN pnpm install --prod --frozen-lockfile && pnpm store prune
+
+# Copy built application from builder stage
+ARG APP_NAME
+COPY --from=builder --chown=nestjs:nodejs /app/dist/apps/${APP_NAME} ./dist
+
+# Copy any necessary configuration files
+COPY --from=builder --chown=nestjs:nodejs /app/libs ./libs
+
+# Switch to non-root user
+USER nestjs
+
+# Expose port (will be overridden in specific Dockerfiles)
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node healthcheck.js || exit 1
+
+# Default command (will be overridden in specific Dockerfiles)
+CMD ["node", "dist/main.js"]
