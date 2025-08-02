@@ -1,8 +1,8 @@
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { GetUserByIdQuery } from '../get-user-by-id.query';
-import { IUserRepository } from '@n8n-clone/domain/user';
-import { USER_REPOSITORY } from '../../commands/handlers/create-user.handler';
+import { UserEntity, IUserRepository } from '@n8n-clone/domain/user';
+import { USER_REPOSITORY } from '@n8n-clone/shared/common';
 
 @QueryHandler(GetUserByIdQuery)
 export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {

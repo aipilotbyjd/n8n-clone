@@ -4,8 +4,7 @@ import { CreateUserCommand } from '../create-user.command';
 import { UserEntity, IUserRepository } from '@n8n-clone/domain/user';
 import { JwtAuthService } from '@n8n-clone/infrastructure/security';
 import { Id } from '@n8n-clone/domain/core';
-
-export const USER_REPOSITORY = 'USER_REPOSITORY';
+import { USER_REPOSITORY } from '@n8n-clone/shared/common';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {

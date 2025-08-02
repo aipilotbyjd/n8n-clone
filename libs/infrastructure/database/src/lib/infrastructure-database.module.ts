@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserRepository } from './repositories/user.repository';
 import { UserSchema } from './schemas/user.schema';
 import { WorkflowSchema } from './schemas/workflow.schema';
-import { USER_REPOSITORY } from '@n8n-clone/application/user';
+import { USER_REPOSITORY } from '@n8n-clone/shared/common';
 
 @Module({
   imports: [
