@@ -56,7 +56,7 @@ export class TriggerManagerService {
   }
 
   async getUserTriggers(userId: string): Promise<TriggerDefinition[]> {
-    return Array.from(this.triggers.values()).filter(t => t.metadata.userId === userId);
+    return Array.from(this.triggers.values()).filter(t => t.metadata && t.metadata['userId'] === userId);
   }
 
   async getTriggersByType(type: TriggerType): Promise<TriggerDefinition[]> {
