@@ -1,7 +1,7 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { AuthenticateUserQuery } from '../authenticate-user.query';
-import { AuthResponseDto } from '@n8n-clone/shared/types';
+import { AuthResponseDto, UserRole } from '@n8n-clone/shared/types';
 
 @Injectable()
 @QueryHandler(AuthenticateUserQuery)
@@ -19,8 +19,26 @@ export class AuthenticateUserHandler implements IQueryHandler<AuthenticateUserQu
         email,
         firstName: 'Test',
         lastName: 'User',
-        role: 'user',
+        role: UserRole.VIEWER,
         isActive: true,
+        profile: {
+          timezone: 'UTC',
+          language: 'en'
+        },
+        preferences: {
+          theme: 'light' as const,
+          emailNotifications: true,
+          slackNotifications: false,
+          webhookNotifications: false,
+          executionNotifications: true,
+          marketingEmails: false
+        },
+        security: {
+          mfaEnabled: false,
+          passwordLastChanged: new Date(),
+          loginAttempts: 0,
+          sessionTimeout: 60
+        },
         createdAt: new Date(),
         updatedAt: new Date()
       },

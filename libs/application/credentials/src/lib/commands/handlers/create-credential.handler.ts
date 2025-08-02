@@ -16,7 +16,7 @@ export class CreateCredentialHandler implements ICommandHandler<CreateCredential
       Math.random().toString(36).substr(2, 9), // Generate ID
       name,
       type as CredentialType,
-      data,
+      JSON.stringify(data), // Convert data to string
       userId,
     );
 

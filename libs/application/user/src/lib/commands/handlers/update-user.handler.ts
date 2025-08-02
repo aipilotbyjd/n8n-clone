@@ -18,13 +18,14 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     }
 
     // Update user properties
-    if (command.email) user.updateProfile(user.firstName, user.lastName);
-    if (command.firstName || command.lastName) {
-      user.updateProfile(command.firstName || user.firstName, command.lastName || user.lastName);
+    const { updates } = command;
+    if (updates.email) user.updateEmail(updates.email);
+    if (updates.firstName || updates.lastName) {
+      user.updateProfile(updates.firstName || user.firstName, updates.lastName || user.lastName);
     }
-    if (command.role) user.changeRole(command.role);
-    if (command.isActive !== undefined) {
-      command.isActive ? user.activate() : user.deactivate();
+    if (updates.role) user.changeRole(updates.role);
+    if (updates.status !== undefined) {
+      updates.status === 'active' ? user.activate() : user.deactivate();
     }
 
     await this.userRepository.save(user);

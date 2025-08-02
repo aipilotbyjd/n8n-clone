@@ -20,6 +20,7 @@ import {
   UserResponseDto,
   AuthResponseDto,
 } from '@n8n-clone/application/user';
+import { UserRole } from '@n8n-clone/shared/types';
 
 @Controller('users')
 export class UsersController {
@@ -92,7 +93,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body('role') role: string,
   ): Promise<UserResponseDto> {
-    return this.usersService.changeUserRole(id, role);
+    return this.usersService.changeUserRole(id, role as UserRole);
   }
 
   @Post('auth/reset-password')

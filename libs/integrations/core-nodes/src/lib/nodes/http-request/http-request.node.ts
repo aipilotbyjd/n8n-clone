@@ -257,7 +257,8 @@ export class HttpRequestNode implements INodeType {
               requestOptions.body = JSON.parse(body);
               requestOptions.json = true;
             } catch (error) {
-              throw new Error(`Invalid JSON in body: ${error.message}`);
+              const errorMessage = error instanceof Error ? error.message : String(error);
+              throw new Error(`Invalid JSON in body: ${errorMessage}`);
             }
           } else if (contentType === 'raw') {
             requestOptions.body = context.getNodeParameter('body', itemIndex, '') as string;
@@ -294,12 +295,15 @@ export class HttpRequestNode implements INodeType {
 
       } catch (error) {
         // Handle errors
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        const statusCode = (error as any)?.statusCode || null;
         const errorItem: INodeExecutionData = {
           json: {
             error: {
-              message: error.message,
-              stack: error.stack,
-              statusCode: error.statusCode || null
+              message: errorMessage,
+              stack: errorStack,
+              statusCode: statusCode
             }
           },
           pairedItem: { item: itemIndex }

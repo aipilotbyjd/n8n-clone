@@ -13,6 +13,7 @@ import {
   UserResponseDto,
   AuthResponseDto,
 } from '@n8n-clone/application/user';
+import { UserRole } from '@n8n-clone/shared/types';
 
 @Injectable()
 export class UsersService {
@@ -31,7 +32,7 @@ export class UsersService {
       dto.password,
       dto.firstName,
       dto.lastName,
-      dto.role || 'user',
+      dto.role || UserRole.VIEWER,
       dto.workspaceId
     );
 
@@ -76,7 +77,7 @@ export class UsersService {
       lastName: dto.lastName,
       email: dto.email,
       role: dto.role,
-      status: dto.active !== undefined ? (dto.active ? 'active' : 'inactive') : dto.status,
+      status: dto.isActive !== undefined ? (dto.isActive ? 'active' : 'inactive') : dto.status,
       preferences: dto.preferences,
     });
     
@@ -105,7 +106,7 @@ export class UsersService {
     return this.updateUser(userId, { status: 'inactive' });
   }
 
-  async changeUserRole(userId: string, role: string): Promise<UserResponseDto> {
+  async changeUserRole(userId: string, role: UserRole): Promise<UserResponseDto> {
     return this.updateUser(userId, { role });
   }
 

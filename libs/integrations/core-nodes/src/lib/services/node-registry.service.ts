@@ -20,11 +20,11 @@ export interface NodeDefinition {
 export interface NodeProperty {
   displayName: string;
   name: string;
-  type: 'string' | 'number' | 'boolean' | 'options' | 'collection' | 'fixedCollection';
+  type: 'string' | 'number' | 'boolean' | 'options' | 'collection' | 'fixedCollection' | 'json' | 'dateTime';
   default?: any;
   required?: boolean;
   description?: string;
-  options?: { name: string; value: any }[];
+  options?: { name: string; value: any; displayName?: string }[] | NodeProperty[];
 }
 
 export interface CredentialInfo {
@@ -115,7 +115,9 @@ export class NodeRegistryService {
 
       this.logger.log(`Registered node: ${nodeType}`);
     } catch (error) {
-      this.logger.error(`Failed to register node: ${error.message}`, error.stack);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Failed to register node: ${errorMessage}`, errorStack);
       throw error;
     }
   }
@@ -158,7 +160,8 @@ export class NodeRegistryService {
       this.logger.debug(`Node execution completed: ${nodeType}`);
       return result;
     } catch (error) {
-      this.logger.error(`Node execution failed: ${nodeType}`, error.stack);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Node execution failed: ${nodeType}`, errorStack);
       throw error;
     }
   }

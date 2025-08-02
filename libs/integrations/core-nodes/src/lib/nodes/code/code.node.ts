@@ -183,12 +183,14 @@ return items`,
         return [returnData];
       }
     } catch (error) {
-      context.logger.error(`Code execution failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      context.logger.error(`Code execution failed: ${errorMessage}`);
       return [[{
         json: {
           error: {
-            message: error.message,
-            stack: error.stack
+            message: errorMessage,
+            stack: errorStack
           }
         }
       }]];

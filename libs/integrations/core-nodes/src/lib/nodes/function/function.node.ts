@@ -39,11 +39,13 @@ export class FunctionNode implements INodeType {
         eval(functionCode);
         returnData.push(item);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorStack = error instanceof Error ? error.stack : undefined;
         returnData.push({
           json: {
             error: {
-              message: error.message,
-              stack: error.stack
+              message: errorMessage,
+              stack: errorStack
             }
           },
           pairedItem: { item: itemIndex }

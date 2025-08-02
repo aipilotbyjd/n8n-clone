@@ -21,7 +21,7 @@ export interface NodeProperty {
   default?: any;
   required?: boolean;
   description?: string;
-  options?: { name: string; value: any }[];
+  options?: { name: string; value: any }[] | NodeProperty[];
   displayOptions?: {
     show?: Record<string, any[]>;
     hide?: Record<string, any[]>;

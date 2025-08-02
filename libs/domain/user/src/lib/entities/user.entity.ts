@@ -83,6 +83,11 @@ export class UserEntity extends AggregateRoot {
     this.touch();
   }
 
+  updateEmail(newEmail: string): void {
+    this._email = newEmail;
+    this.touch();
+  }
+
   toJSON() {
     return {
       id: this.id,
